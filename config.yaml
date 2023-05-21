@@ -1,0 +1,22 @@
+assets:
+  background: [assets, images,"background.jpg"]
+  font: [assets, fonts, "Montserrat-SemiBold.ttf"]
+colors:
+  font_color: (255,255,255)
+  button: (255,255,255,50)
+  button_hover: (255,255,255,100)
+  maze_container: (255,255,255,70)
+ui_propotions:
+  selection_button: [width: 0.2, height: 0.05]
+  bars: [width: 1, height: 0.05]
+  maze_container: [width: 0.8, height: 0.8]
+  border_radius: 10
+text:
+  app_name: "PathFinding 2.0"
+  author: "Patryk Pyrkosz 119254"
+  status: 
+    working: "Working"
+    done: "Done"
+    solving: "Solving maze"
+    generating: "Generating maze"
+    
