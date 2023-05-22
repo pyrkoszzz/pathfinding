@@ -22,5 +22,4 @@ class EventAgent():
         elif action == "Next step":
             self.app.maze_agent.nextStep()
         elif action == "Fast generate":
-            while not self.app.maze_agent.done:
-                self.app.maze_agent.nextStep()
+            self.app.maze_agent.fastForward()

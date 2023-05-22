@@ -24,6 +24,11 @@ class MazeAgent:
 		if not self.done and self.obj != None:
 			self.maze, self.graph =  self.obj.kruskalMSTStep()
 
+	def fastForward(self):
+		if self.obj != None:
+			while not self.done:
+				self.maze, self.graph =  self.obj.kruskalMSTStep()
+
 class MazeGraph:
 
 
