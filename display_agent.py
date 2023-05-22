@@ -66,6 +66,30 @@ class UIPainter:
              shape_surf.get_height() * self.ui_propotions['bars']['text_offset']))
         self.display.display_surf.blit(shape_surf, bottom_bar)
 
+    def drawMazeContainer(self):
+        self.maze_container = pygame.Rect(self.display.display_surf_width - self.display.display_surf_height * self.ui_propotions['maze_container']['pos_x'] - self.display.display_surf_height * self.ui_propotions['maze_container']['height'],
+                            self.display.display_surf_height * self.ui_propotions['maze_container']['pos_y'], 
+                            self.display.display_surf_height * self.ui_propotions['maze_container']['width'], 
+                            self.display.display_surf_height * self.ui_propotions['maze_container']['height'])
+        shape_surf = pygame.Surface(pygame.Rect(self.maze_container).size, pygame.SRCALPHA)
+        pygame.draw.rect(shape_surf, self.colors['maze_container'], shape_surf.get_rect(), border_radius=self.ui_propotions['border_radius'])
+        self.display.display_surf.blit(shape_surf, self.maze_container)
+
     def drawUI(self):
         self.drawBackground()
         self.drawInfoBars()
+        self.drawMazeContainer()
+
+class MazePainter(UIPainter):
+
+    def drawMazeBackground(self):
+      pygame.draw.rect(self.shape_surf, (255, 255, 255, 70), self.shape_surf.get_rect(), border_radius=10)
+      self.screen.blit(self.shape_surf, self.maze_bg)
+
+    def rect_round(self, x1, y1, w, h):
+      r_x1 = round(x1)
+      r_y1 = round(y1)
+      r_w = round(x1 - r_x1 + w)
+      r_h = round(y1 - r_y1 + h)
+      return pygame.Rect(r_x1, r_y1, r_w, r_h)
+    

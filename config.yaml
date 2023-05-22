@@ -26,6 +26,8 @@ ui_propotions:
   maze_container: 
     width: 0.8
     height: 0.8
+    pos_x: 0.05
+    pos_y: 0.1
   border_radius: 10
   font: 0.035
 text:
