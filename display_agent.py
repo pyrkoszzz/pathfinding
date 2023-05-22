@@ -10,7 +10,8 @@ class DisplayAgent():
         self.action_buttons = {
             "Kruskal": None,
             "Exit": None,
-            "Next step": None
+            "Next step": None,
+            "Fast generate": None
         }
         pygame.init()
 

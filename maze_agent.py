@@ -8,7 +8,7 @@ class MazeAgent:
 		self.app = app_instance
 		self.maze = None
 		self.graph = None
-		self.maze_size = 9
+		self.maze_size = 144
 		self.done = False
 		self.steps_cntr = 0
 		self.obj = None
