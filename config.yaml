@@ -1,3 +1,6 @@
+display:
+  mode: 0
+  
 assets:
   background: [assets, images,"background.jpg"]
   font: [assets, fonts, "Montserrat-SemiBold.ttf"]
@@ -19,4 +22,4 @@ text:
     done: "Done"
     solving: "Solving maze"
     generating: "Generating maze"
-    
+  
