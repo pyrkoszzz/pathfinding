@@ -8,21 +8,33 @@ colors:
   button: [255,255,255,50]
   button_hover: [255,255,255,100]
   maze_container: [255,255,255,70]
+  menu_container: [255,255,255,70]
   info_bars: [0, 0, 127, 127]
 ui_propotions:
+  side_menu:
+    width: 0.2
+    height: 0.8
+    pos_x: 0.05
+    pos_y: 0.1
+    buttons_padding: 0.05
   selection_button: 
     width: 0.2
     height: 0.05
+    pos_x: 0
+    pos_y: 0.05
+    text_offset: 0.1
   bars: 
-    width: 1
-    height: 0.05
     text_offset: 0.1
     topbar:
       pos_x: 0
       pos_y: 0
+      width: 1
+      height: 0.05
     bottombar:
       pos_x: 0
       pos_y: 0.95
+      width: 1
+      height: 0.05
   maze_container: 
     width: 0.8
     height: 0.8
