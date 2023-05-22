@@ -2,6 +2,8 @@ import random
 import math
 
 class MazeAgent:
+
+
 	def __init__(self, app_instance):
 		self.app = app_instance
 		self.maze = None
@@ -96,6 +98,7 @@ class Kruskal(MazeGraph):
 			self.maze_agent.done = True
 			self.maze_agent.app.status = "Maze generated successfuly"
 		return self.generateMazeArray()
+	
 	def generateMazeArray(self):
 		n = int(math.sqrt(self.V))
 		maze = []
@@ -108,5 +111,4 @@ class Kruskal(MazeGraph):
 
 		for u, v, w in self.result:
 			maze[u // n + v // n][u % n + v % n] = 1
-		print(maze)
 		return maze, self.result
