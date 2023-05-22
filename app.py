@@ -10,11 +10,12 @@ class App:
 
     def __init__(self):
         self.running = True
+        self.status = "Ready"
         self.config_agent = config_agent.ConfigAgent()
         self.display_agent = display_agent.DisplayAgent(self)
         self.assets_manager = assets_manager.AssetsManager(self)
         self.event_agent = event_agent.EventAgent(self)
-        self.maze_agent = maze_agent.MazeAgent()
+        self.maze_agent = maze_agent.MazeAgent(self)
 
 if __name__ == "__main__":
     app = App()

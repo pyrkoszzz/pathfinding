@@ -18,6 +18,8 @@ class EventAgent():
         if action == "Exit":
             self.app.running = False
         elif action == "Kruskal":
-            self.app.maze_agent.generateKruskal()
+            self.app.maze_agent.initializeKruskal()
+        elif action == "Next step":
+            self.app.maze_agent.nextStep()
         
     

@@ -9,7 +9,8 @@ class DisplayAgent():
         self.display_surf_size = self.display_surf_width, self.display_surf_height = self.display_surf.get_width(), self.display_surf.get_height()
         self.action_buttons = {
             "Kruskal": None,
-            "Exit": None
+            "Exit": None,
+            "Next step": None
         }
         pygame.init()
 
@@ -63,7 +64,7 @@ class UIPainter:
             self.display.display_surf_height * self.ui_propotions['bars']['bottombar']['height'])
         shape_surf = pygame.Surface(pygame.Rect(bottom_bar).size, pygame.SRCALPHA)
         pygame.draw.rect(shape_surf, self.colors['info_bars'], shape_surf.get_rect())
-        app_status = self.font.render(self.text['status']['status'] + ": " + self.text['status']['working'], True, self.colors['text'])
+        app_status = self.font.render(self.text['status']['status'] + ": " + self.display.app.status, True, self.colors['text'])
         shape_surf.blit(
             app_status, 
             (shape_surf.get_height() * self.ui_propotions['bars']['text_offset'],
