@@ -24,7 +24,7 @@ class DisplayAgent():
         self.ui_painter = UIPainter(self)
         while self.app.running:
             for event in pygame.event.get():
-                self.app.event_agent.handleEvent(event)
+                self.app.event_agent.handleEvent(event, pygame.mouse.get_pos())
             self.render()
         self.cleanUp()
 
@@ -76,9 +76,20 @@ class UIPainter:
             self.display.display_surf_height * self.ui_propotions['maze_container']['pos_y'], 
             self.display.display_surf_height * self.ui_propotions['maze_container']['width'], 
             self.display.display_surf_height * self.ui_propotions['maze_container']['height'])
-        shape_surf = pygame.Surface(pygame.Rect(self.maze_container).size, pygame.SRCALPHA)
-        pygame.draw.rect(shape_surf, self.colors['maze_container'], shape_surf.get_rect(), border_radius=self.ui_propotions['border_radius'])
-        self.display.display_surf.blit(shape_surf, self.maze_container)
+        self.maze_surf = pygame.Surface(pygame.Rect(self.maze_container).size, pygame.SRCALPHA)
+        pygame.draw.rect(self.maze_surf, self.colors['maze_container'],  self.maze_surf.get_rect(), border_radius=self.ui_propotions['border_radius'])
+        self.display.display_surf.blit( self.maze_surf, self.maze_container)
+
+    def drawMaze(self):
+        if self.display.app.maze_agent.maze != None and self.display.app.maze_agent.graph != None:
+            maze_size = len(self.display.app.maze_agent.maze[0])
+            self.rect_size = (self.maze_surf.get_width() / maze_size)
+            for x in range(maze_size):
+                for y in range(maze_size):
+                    rect = self.rect_round(x * self.rect_size, y * self.rect_size, self.rect_size, self.rect_size)
+                    if not self.display.app.maze_agent.maze[y][x]:
+                        pygame.draw.rect(self.maze_surf,"black", rect)
+            self.display.display_surf.blit(self.maze_surf, self.maze_container)
 
     def drawMenuButton(self, action, button_idx):
         m_pos = pygame.mouse.get_pos()
@@ -117,13 +128,11 @@ class UIPainter:
         self.drawInfoBars()
         self.drawSideMenu()
         self.drawMazeContainer()
-
-class MazePainter(UIPainter):
-
+        self.drawMaze()
+    
     def rect_round(self, x1, y1, w, h):
       r_x1 = round(x1)
       r_y1 = round(y1)
       r_w = round(x1 - r_x1 + w)
       r_h = round(y1 - r_y1 + h)
       return pygame.Rect(r_x1, r_y1, r_w, r_h)
-    

@@ -2,10 +2,14 @@ import random
 import math
 
 class MazeAgent:
-    def generateKruskal(self, vertices):
-        return Kruskal(vertices).kruskalMST()
+	def __init__(self):
+		self.maze = None
+		self.graph = None
+		self.maze_size = 625
         
-
+	def generateKruskal(self):
+	    self.maze, self.graph =  Kruskal(self.maze_size).kruskalMST()
+        
 class MazeGraph:
 
 
@@ -83,4 +87,4 @@ class Kruskal(MazeGraph):
 
     for u, v, w in self.result:
         maze[u // n + v // n][u % n + v % n] = 1
-    return {"maze_arr": maze, "maze_graph": self.result}
+    return maze, self.result
