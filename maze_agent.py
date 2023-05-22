@@ -95,8 +95,7 @@ class Kruskal(MazeGraph):
 		if self.e >= self.V - 1:
 			self.maze_agent.done = True
 			self.maze_agent.app.status = "Maze generated successfuly"
-		return self.maze_agent.maze, self.maze_agent.graph, 
-  
+		return self.generateMazeArray()
 	def generateMazeArray(self):
 		n = int(math.sqrt(self.V))
 		maze = []
