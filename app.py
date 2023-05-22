@@ -13,6 +13,7 @@ class App:
         self.display_agent = display_agent.DisplayAgent(self)
         self.assets_manager = assets_manager.AssetsManager(self)
         self.event_agent = event_agent.EventAgent(self)
+        
 if __name__ == "__main__":
     a1 = App()
     a1.display_agent.run()

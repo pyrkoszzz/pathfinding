@@ -18,3 +18,15 @@ class ConfigAgent():
     
     def getMainBackgroundPath(self):
         return self.config['assets']['background']
+    
+    def getMainFontPath(self):
+        return self.config['assets']['font']
+
+    def getPropotionsDict(self):
+        return self.config['ui_propotions']
+    
+    def getColors(self):
+        return self.config['colors']
+    
+    def getTexts(self):
+        return self.config['text']
