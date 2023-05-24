@@ -1,5 +1,6 @@
 import random
 import math
+import pygame
 
 class MazeAgent:
 
@@ -26,8 +27,10 @@ class MazeAgent:
 
 	def fastForward(self):
 		if self.obj != None:
-			while not self.done:
+			if not self.done:
 				self.maze, self.graph =  self.obj.kruskalMSTStep()
+			else:
+				self.app.event_agent.action = None
 
 class MazeGraph:
 

@@ -13,7 +13,8 @@ class DisplayAgent():
             "Next step": None,
             "Fast generate": None,
             "Solve DFS": None,
-            "Clear layer": None
+            "Clear layer": None,
+            "Next step solve": None
         }
         pygame.init()
 
@@ -24,11 +25,15 @@ class DisplayAgent():
     def cleanUp(self):
         pygame.quit()
 
+    def loop(self):
+        self.app.event_agent.executeActionsQueue()
+
     def run(self):
         self.ui_painter = UIPainter(self)
         while self.app.running:
             for event in pygame.event.get():
                 self.app.event_agent.handleEvent(event, pygame.mouse.get_pos())
+            self.loop()
             self.render()
         self.cleanUp()
 

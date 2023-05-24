@@ -1,10 +1,10 @@
 import pygame
 
 class EventAgent():
-    
 
     def __init__(self, app_instance):
         self.app = app_instance
+        self.action = None
 
     def handleEvent(self,event, m_pos):
         if event.type == pygame.QUIT:
@@ -22,8 +22,14 @@ class EventAgent():
         elif action == "Next step":
             self.app.maze_agent.nextStep()
         elif action == "Fast generate":
-            self.app.maze_agent.fastForward()
+            self.action = self.app.maze_agent.fastForward
         elif action == "Solve DFS":
-            self.app.solve_agent.runDfs()
+            self.app.solve_agent.initializeDFS()
         elif action == "Clear layer":
             self.app.maze_agent.maze = None
+        elif action == "Next step solve":
+            self.app.solve_agent.nextStep()
+
+    def executeActionsQueue(self):
+        if self.action is not None:
+            self.action()
