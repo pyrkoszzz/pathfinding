@@ -23,3 +23,7 @@ class EventAgent():
             self.app.maze_agent.nextStep()
         elif action == "Fast generate":
             self.app.maze_agent.fastForward()
+        elif action == "Solve DFS":
+            self.app.solve_agent.runDfs()
+        elif action == "Clear layer":
+            self.app.maze_agent.maze = None

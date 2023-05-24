@@ -11,7 +11,9 @@ class DisplayAgent():
             "Kruskal": None,
             "Exit": None,
             "Next step": None,
-            "Fast generate": None
+            "Fast generate": None,
+            "Solve DFS": None,
+            "Clear layer": None
         }
         pygame.init()
 
@@ -65,7 +67,7 @@ class UIPainter:
             self.display.display_surf_height * self.ui_propotions['bars']['bottombar']['height'])
         shape_surf = pygame.Surface(pygame.Rect(bottom_bar).size, pygame.SRCALPHA)
         pygame.draw.rect(shape_surf, self.colors['info_bars'], shape_surf.get_rect())
-        app_status = self.font.render(self.text['status']['status'] + ": " + self.display.app.status, True, self.colors['text'])
+        app_status = self.font.render(self.text['state']['status'] + ": " + self.display.app.status, True, self.colors['text'])
         shape_surf.blit(
             app_status, 
             (shape_surf.get_height() * self.ui_propotions['bars']['text_offset'],
@@ -91,6 +93,8 @@ class UIPainter:
                     rect = self.rect_round(x * self.rect_size, y * self.rect_size, self.rect_size, self.rect_size)
                     if not self.display.app.maze_agent.maze[y][x]:
                         pygame.draw.rect(self.maze_surf,"black", rect)
+                    elif self.display.app.maze_agent.maze[y][x] == 2:
+                        pygame.draw.rect(self.maze_surf,"red", rect)
             self.display.display_surf.blit(self.maze_surf, self.maze_container)
 
     def drawMenuButton(self, action, button_idx):
@@ -131,7 +135,7 @@ class UIPainter:
         self.drawSideMenu()
         self.drawMazeContainer()
         self.drawMaze()
-    
+
     def rect_round(self, x1, y1, w, h):
       r_x1 = round(x1)
       r_y1 = round(y1)

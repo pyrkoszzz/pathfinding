@@ -45,10 +45,11 @@ ui_propotions:
 text:
   app_name: "PathFinding 2.0"
   author: "Patryk Pyrkosz 119254"
-  status: 
+  state: 
     status: "Status"
     working: "Working"
     done: "Done"
     solving: "Solving maze"
     generating: "Generating maze"
+    ready: "Ready"
   

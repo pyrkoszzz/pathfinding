@@ -30,3 +30,6 @@ class ConfigAgent():
     
     def getTexts(self):
         return self.config['text']
+    
+    def getStates(self):
+        return self.config['text']['state']

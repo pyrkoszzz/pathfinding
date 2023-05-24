@@ -8,7 +8,7 @@ class MazeAgent:
 		self.app = app_instance
 		self.maze = None
 		self.graph = None
-		self.maze_size = 144
+		self.maze_size = 625
 		self.done = False
 		self.steps_cntr = 0
 		self.obj = None
@@ -117,3 +117,4 @@ class Kruskal(MazeGraph):
 		for u, v, w in self.result:
 			maze[u // n + v // n][u % n + v % n] = 1
 		return maze, self.result
+
