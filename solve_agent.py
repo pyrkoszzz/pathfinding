@@ -19,6 +19,8 @@ class SolveAgent:
 
     def initializeDFS(self):
         if self.app.maze_agent.graph is not None:
+            self.statring_v = 0
+            self.ending_v = self.app.maze_agent.maze_size-1
             self.obj = DFSSolver(self)
             self.maze_graph = self.app.maze_agent.graph
             self.maze_graph = sorted(self.maze_graph, key=lambda item: item[0])

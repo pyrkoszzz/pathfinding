@@ -9,12 +9,16 @@ class DisplayAgent():
         self.display_surf_size = self.display_surf_width, self.display_surf_height = self.display_surf.get_width(), self.display_surf.get_height()
         self.action_buttons = {
             "Kruskal": None,
+            "Prim": None,
             "Exit": None,
             "Next step": None,
             "Fast generate": None,
             "Solve DFS": None,
             "Clear layer": None,
-            "Next step solve": None
+            "Next step solve": None,
+            "Stop": None,
+            "Size +": None,
+            "Size -": None
         }
         pygame.init()
 
@@ -99,7 +103,7 @@ class UIPainter:
                     if not self.display.app.maze_agent.maze[y][x]:
                         pygame.draw.rect(self.maze_surf,"black", rect)
                     elif self.display.app.maze_agent.maze[y][x] == 2:
-                        pygame.draw.rect(self.maze_surf,"red", rect)
+                        pygame.draw.rect(self.maze_surf, self.colors['maze_path'], rect)
             self.display.display_surf.blit(self.maze_surf, self.maze_container)
 
     def drawMenuButton(self, action, button_idx):

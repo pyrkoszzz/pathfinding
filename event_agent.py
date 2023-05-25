@@ -1,4 +1,5 @@
 import pygame
+import math
 
 class EventAgent():
 
@@ -19,6 +20,8 @@ class EventAgent():
             self.app.running = False
         elif action == "Kruskal":
             self.app.maze_agent.initializeKruskal()
+        elif action == "Prim":
+            self.app.maze_agent.initializePrim()
         elif action == "Next step":
             self.app.maze_agent.nextStep()
         elif action == "Fast generate":
@@ -29,6 +32,12 @@ class EventAgent():
             self.app.maze_agent.maze = None
         elif action == "Next step solve":
             self.app.solve_agent.nextStep()
+        elif action == "Stop":
+            self.action = None
+        elif action == "Size +":
+            self.app.maze_agent.maze_size = int(math.pow(math.sqrt(self.app.maze_agent.maze_size) + 1, 2))
+        elif action == "Size -":
+            self.app.maze_agent.maze_size = int(math.pow(math.sqrt(self.app.maze_agent.maze_size) - 1, 2))
 
     def executeActionsQueue(self):
         if self.action is not None:

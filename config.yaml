@@ -10,6 +10,7 @@ colors:
   maze_container: [255,255,255,70]
   menu_container: [255,255,255,70]
   info_bars: [0, 0, 127, 127]
+  maze_path: [0, 0, 127, 127]
 ui_propotions:
   side_menu:
     width: 0.2
