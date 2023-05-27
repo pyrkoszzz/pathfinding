@@ -6,7 +6,7 @@ class SolveAgent:
     def __init__(self, app_instance):
         self.app = app_instance
         self.roadmap = None
-        self.statring_v = 0
+        self.starting_v = 0
         self.ending_v = self.app.maze_agent.maze_size-1
     
     def addEdge(self, u,v):
@@ -19,15 +19,14 @@ class SolveAgent:
 
     def initializeDFS(self):
         if self.app.maze_agent.graph is not None:
-            self.statring_v = 0
-            self.ending_v = self.app.maze_agent.maze_size-1
+            print(self.starting_v, self.ending_v)
             self.obj = DFSSolver(self)
             self.maze_graph = self.app.maze_agent.graph
             self.maze_graph = sorted(self.maze_graph, key=lambda item: item[0])
             self.m_adj_list = {node: set() for node in range(len(self.maze_graph)+1)}     
             self.createAdjListFromEgdes()
 
-            self.roadmap = self.obj.dfs(self.statring_v, self.ending_v, [], set())
+            self.roadmap = self.obj.dfs(self.starting_v, self.ending_v, [], set())
             self.makeMazePath()
 
     def makeMazePath(self):

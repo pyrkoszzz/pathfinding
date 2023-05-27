@@ -1,4 +1,5 @@
 import pygame
+import math
 
 class DisplayAgent():
 
@@ -20,6 +21,7 @@ class DisplayAgent():
             "Size +": None,
             "Size -": None
         }
+        self.maze_path_colliders = []
         pygame.init()
 
     def render(self):
@@ -51,6 +53,8 @@ class UIPainter:
         self.font = pygame.font.Font(self.display.app.assets_manager.main_font, 
                                      int(self.display.display_surf_height * self.ui_propotions['font']))
         self.text = self.display.app.config_agent.getTexts()
+        n = int(math.sqrt(self.display.app.maze_agent.maze_size))
+        [self.display.maze_path_colliders.append([None for _ in range(2 * n - 1)]) for _ in range(2 * n - 1)]
     
     def drawBackground(self):
         self.display.display_surf.blit(self.display.app.assets_manager.main_background, (0,0))
@@ -104,6 +108,13 @@ class UIPainter:
                         pygame.draw.rect(self.maze_surf,"black", rect)
                     elif self.display.app.maze_agent.maze[y][x] == 2:
                         pygame.draw.rect(self.maze_surf, self.colors['maze_path'], rect)
+                    elif self.display.app.maze_agent.maze[y][x] == 3:
+                        pygame.draw.rect(self.maze_surf, "green", rect)
+                    elif self.display.app.maze_agent.maze[y][x] == 4:
+                        pygame.draw.rect(self.maze_surf, "red", rect)
+                    elif self.display.app.status == "Maze generated successfuly":
+                        rect = rect.move(self.maze_container.x, self.maze_container.y)
+                        self.display.maze_path_colliders[y][x] = rect
             self.display.display_surf.blit(self.maze_surf, self.maze_container)
 
     def drawMenuButton(self, action, button_idx):

@@ -9,7 +9,7 @@ class MazeAgent:
 		self.app = app_instance
 		self.maze = None
 		self.graph = None
-		self.maze_size = 625
+		self.maze_size = 64
 		self.done = False
 		self.steps_cntr = 0
 		self.obj = None
@@ -35,7 +35,7 @@ class MazeAgent:
 	def fastForward(self):
 		if self.obj != None:
 			if not self.done:
-				self.maze, self.graph =  self.obj.kruskalMSTStep()
+				self.maze, self.graph =  self.obj.nextStep()
 			else:
 				self.app.event_agent.action = None
 
@@ -126,7 +126,7 @@ class Kruskal(MazeGraph):
 				self.union(self.parent, self.rank, x, y)
 				return self.generateMazeArray()
 			else:
-				self.kruskalMSTStep()
+				self.nextStep()
 		if self.e >= self.V - 1:
 			self.maze_agent.done = True
 			self.maze_agent.app.status = "Maze generated successfuly"
