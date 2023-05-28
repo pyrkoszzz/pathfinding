@@ -27,7 +27,7 @@ class EventAgent():
                         self.executeAction(action)
 
     def handlePointsChoice(self, event, m_pos):
-        if self.app.maze_agent.maze != None and len(self.app.maze_agent.maze[0]) > 0:
+        if self.app.state_agent.canPointBePicked() and self.app.maze_agent.maze != None and len(self.app.maze_agent.maze[0]) > 0:
             it = range(len(self.app.maze_agent.maze[0])) 
             for x in it:
                 for y in it:

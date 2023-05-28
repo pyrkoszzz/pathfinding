@@ -12,5 +12,8 @@ class StateAgent:
     def canMazeBeExported(self):
         return self.state == self.states['generated'] or self.state == self.states['solved']
     
+    def canPointBePicked(self):
+        return self.state == self.states['generated'] or self.state == self.states['solved']
+    
     def updateState(self, state_key):
         self.state = self.states[state_key]
