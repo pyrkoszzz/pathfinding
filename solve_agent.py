@@ -10,7 +10,9 @@ class SolveAgent:
         self.s_v = (0,0)
         self.e_v = (2*int(math.sqrt(self.app.maze_agent.maze_size))-2, 2*int(math.sqrt(self.app.maze_agent.maze_size))-2)
         self.maze_path = None
-    
+        self.done = False
+        self.obj = None
+
     def addEdge(self, u,v):
         self.m_adj_list[u].append(v)
 
@@ -20,9 +22,10 @@ class SolveAgent:
             self.addEdge(v,u)
 
     def initializeDFS(self):
+        self.app.event_agent.action = None
         if self.app.maze_agent.graph is not None:
-            self.done = False
             self.steps_cntr = 0
+            self.done = False
             self.app.state_agent.log = "Maze traversal using DFS algo started"
             self.app.state_agent.updateState("solving")
             self.obj = DFSSolver(self)

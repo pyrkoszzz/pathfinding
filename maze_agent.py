@@ -9,12 +9,13 @@ class MazeAgent:
 		self.app = app_instance
 		self.maze = None
 		self.graph = None
-		self.maze_size = 25
+		self.maze_size = 625
 		self.done = False
 		self.steps_cntr = 0
 		self.obj = None
 
 	def initializeKruskal(self):
+		self.app.event_agent.action = None
 		self.obj = Kruskal(self.maze_size, self)
 		self.maze, self.graph = self.obj.generateMazeArray()
 		self.app.state_agent.log = "Maze generation using Kruskal's algo started"
@@ -23,6 +24,7 @@ class MazeAgent:
 		self.done = False
 
 	def initializePrim(self):
+		self.app.event_agent.action = None
 		self.obj = Prim(self.maze_size, self)
 		self.maze, self.graph = self.obj.generateMazeArray()
 		self.app.state_agent.log = "Maze generation using Prim's algo started"
@@ -45,6 +47,8 @@ class MazeAgent:
 	
 	def importMaze(self, f):
 		self.maze_size = int(f.readline())
+		self.app.solve_agent.ending_v = self.maze_size - 1
+		self.app.solve_agent.e_v = (2*int(math.sqrt(self.maze_size))-2, 2*int(math.sqrt(self.maze_size))-2)
 		self.done = False
 		self.obj = MazeImporter(f, self.maze_size, self)
 		self.maze, self.graph = self.obj.generateMazeArray()
