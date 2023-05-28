@@ -1,6 +1,6 @@
 import random
 import math
-import pygame
+import sys
 
 class MazeAgent:
 
@@ -9,7 +9,7 @@ class MazeAgent:
 		self.app = app_instance
 		self.maze = None
 		self.graph = None
-		self.maze_size = 64
+		self.maze_size = 25
 		self.done = False
 		self.steps_cntr = 0
 		self.obj = None
@@ -26,7 +26,7 @@ class MazeAgent:
 		self.obj = Prim(self.maze_size, self)
 		self.maze, self.graph = self.obj.generateMazeArray()
 		self.app.state_agent.log = "Maze generation using Prim's algo started"
-		self.app.state_agent.state.updateState("generating")
+		self.app.state_agent.updateState("generating")
 		self.steps_cntr = 0
 		self.done = False
 
@@ -47,7 +47,7 @@ class MazeAgent:
 		self.obj = MazeImporter(f, self.maze_size, self)
 		self.maze, self.graph = self.obj.generateMazeArray()
 		self.obj = None
-		
+
 
 class MazeGraph:
 
@@ -56,20 +56,40 @@ class MazeGraph:
 		self.V = vertices
 		self.graph = []
 		self.size = int(math.sqrt(vertices))
-
-		it = 2* ((self.size - 1) * self.size)
-		cntr = 0
-		for _ in range(self.size):
-			for _ in range(self.size - 1):
-				self.addEdge(cntr, cntr + 1, random.randint(1, it))
+		print(self.__class__.__name__)
+		if self.__class__.__name__ == "Kruskal":
+			it = 2* ((self.size - 1) * self.size)
+			cntr = 0
+			for _ in range(self.size):
+				for _ in range(self.size - 1):
+					self.addEdge(cntr, cntr + 1, random.randint(1, it))
+					cntr += 1
 				cntr += 1
-			cntr += 1
 
-		cntr = 0
-		for _ in range((self.size - 1) * self.size):
-			self.addEdge(cntr, cntr + self.size, random.randint(1, it))
-			cntr += 1
- 
+			cntr = 0
+			for _ in range((self.size - 1) * self.size):
+				self.addEdge(cntr, cntr + self.size, random.randint(1, it))
+				cntr += 1
+		
+		elif self.__class__.__name__ == "Prim":
+			self.graph = [[] for _ in range(self.V)]
+			it = 2* ((self.size - 1) * self.size)
+			cntr = 0
+			for _ in range(self.size):
+				for _ in range(self.size - 1):
+					self.addEdgeAdj(cntr, cntr + 1, random.randint(1, it))
+					cntr += 1
+				cntr += 1
+
+			cntr = 0
+			for _ in range((self.size - 1) * self.size):
+				self.addEdgeAdj(cntr, cntr + self.size, random.randint(1, it))
+				cntr += 1
+	
+	def addEdgeAdj(self, u, v, w):
+		self.graph[u].append((v, w))
+		self.graph[v].append((u, w))
+
 	def addEdge(self, u, v, w):
 		self.graph.append([u, v, w])
 
@@ -158,147 +178,55 @@ class Kruskal(MazeGraph):
 			self.maze_agent.app.state_agent.updateState("generated")
 		return self.generateMazeArray()
 
-class Heap():
- 
-    def __init__(self):
-        self.array = []
-        self.size = 0
-        self.pos = []
- 
-    def newMinHeapNode(self, v, dist):
-        minHeapNode = [v, dist]
-        return minHeapNode
- 
-    # A utility function to swap two nodes of
-    # min heap. Needed for min heapify
-    def swapMinHeapNode(self, a, b):
-        t = self.array[a]
-        self.array[a] = self.array[b]
-        self.array[b] = t
- 
-    # A standard function to heapify at given idx
-    # This function also updates position of nodes
-    # when they are swapped. Position is needed
-    # for decreaseKey()
-    def minHeapify(self, idx):
-        smallest = idx
-        left = 2 * idx + 1
-        right = 2 * idx + 2
- 
-        if left < self.size and self.array[left][1] < self.array[smallest][1]:
-            smallest = left
- 
-        if right < self.size and self.array[right][1] < self.array[smallest][1]:
-            smallest = right
- 
-        # The nodes to be swapped in min heap
-        # if idx is not smallest
-        if smallest != idx:
- 
-            # Swap positions
-            self.pos[self.array[smallest][0]] = idx
-            self.pos[self.array[idx][0]] = smallest
- 
-            # Swap nodes
-            self.swapMinHeapNode(smallest, idx)
- 
-            self.minHeapify(smallest)
- 
-    # Standard function to extract minimum node from heap
-    def extractMin(self):
- 
-        # Return NULL wif heap is empty
-        if self.isEmpty() == True:
-            return
- 
-        # Store the root node
-        root = self.array[0]
- 
-        # Replace root node with last node
-        lastNode = self.array[self.size - 1]
-        self.array[0] = lastNode
- 
-        # Update position of last node
-        self.pos[lastNode[0]] = 0
-        self.pos[root[0]] = self.size - 1
- 
-        # Reduce heap size and heapify root
-        self.size -= 1
-        self.minHeapify(0)
- 
-        return root
- 
-    def isEmpty(self):
-        return True if self.size == 0 else False
- 
-    def decreaseKey(self, v, dist):
-        # Get the index of v in  heap array
-        i = self.pos[v]
-        # Get the node and update its dist value
-        self.array[i][1] = dist
-        # Travel up while the complete tree is not
-        # heapified. This is a O(Logn) loop
-        while i > 0 and self.array[i][1] < self.array[(i - 1) // 2][1]:
- 
-            # Swap this node with its parent
-            self.pos[self.array[i][0]] = (i-1)/2
-            self.pos[self.array[(i-1)//2][0]] = i
-            self.swapMinHeapNode(i, (i - 1)//2)
- 
-            # move to parent index
-            i = (i - 1) // 2
- 
-    # A utility function to check if a given vertex
-    # 'v' is in min heap or not
-    def isInMinHeap(self, v):
-        if self.pos[v] < self.size:
-            return True
-        return False
-
 class Prim(MazeGraph):
 
 
 	def __init__(self, vertices, maze_agent):
 		super().__init__(vertices)
 		self.result = []
-		self.i = 0
-		self.e = 0
-		self.graph = sorted(self.graph, key = lambda item: item[2])
-		self.parent = []
-		self.rank = []
 		self.maze_agent = maze_agent
-
-		for node in range(self.V):
-			self.parent.append(node)
-			self.rank.append(0)
+		self.num_nodes = len(self.graph)
+		self.selected = [False] * self.num_nodes  # Track which nodes are included in the minimum spanning tree
+		self.selected[0] = True  # Start with the first node
+		self.e = 0
+		# Initialize arrays to track the minimum weights and corresponding edges for each node
+		self.min_weights = [sys.maxsize] * self.num_nodes
+		self.min_weights[0] = 0
+		self.min_edges = [None] * self.num_nodes	
 
 	def nextStep(self):
-				V = self.V
-				key = []
-				parent = []
-				minHeap = Heap()
+		if self.e in range(self.num_nodes - 1):
+				self.e += 1
+				min_weight = sys.maxsize
+				min_node = 0
 
-				for v in range(V):
-						parent.append(-1)
-						key.append(1e7)
-						minHeap.array.append(minHeap.newMinHeapNode(v, key[v]))
-						minHeap.pos.append(v)
+				# Find the node with the minimum weight that is not yet self.selected
+				for node in range(self.num_nodes):
+						if not self.selected[node] and self.min_weights[node] < min_weight:
+								min_weight = self.min_weights[node]
+								min_node = node
 
-				minHeap.pos[0] = 0
-				key[0] = 0
-				minHeap.decreaseKey(0, key[0])
-				minHeap.size = V
+				self.selected[min_node] = True  # Include the self.selected node in the minimum spanning tree
 
-				# In the following loop, min heap contains all nodes
-				# not yet added in the MST.
-				while minHeap.isEmpty() == False:
-						newHeapNode = minHeap.extractMin()
-						u = newHeapNode[0]
+				# Update the minimum weights and corresponding edges for the neighboring nodes
+				for neighbor, weight in self.graph[min_node]:
+						if not self.selected[neighbor] and weight < self.min_weights[neighbor]:
+								self.min_weights[neighbor] = weight
+								self.min_edges[neighbor] = (min_node, neighbor)
+				self.maze_agent.steps_cntr += 1
+				self.maze_agent.app.state_agent.log = "Generating maze - steps: " + str(self.maze_agent.steps_cntr)
+			# Build the minimum spanning tree
+		else:
+			self.maze_agent.done = True
+			self.maze_agent.app.state_agent.log = "Maze generated successfuly"
+			self.maze_agent.app.state_agent.updateState("generated")
+		
+		minimum_spanning_tree = []
+		for node in self.min_edges:
+			if node is not None:
+				minimum_spanning_tree.append((node[0], node[1], 1))
 
-						for pCrawl in self.graph[u]:
-								v = pCrawl[0]
-								if minHeap.isInMinHeap(v) and pCrawl[1] < key[v]:
-										key[v] = pCrawl[1]
-										parent[v] = u
-										minHeap.decreaseKey(v, key[v])
-				self.printArr(parent, V)
+		# for node in range(1, self.e - 1):
+		# 		minimum_spanning_tree.append((self.min_edges[node][0], self.min_edges[node][1], self.min_weights[node]))
+		self.result = minimum_spanning_tree
+		return self.generateMazeArray()

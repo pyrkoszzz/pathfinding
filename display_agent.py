@@ -11,9 +11,9 @@ class DisplayAgent():
         self.buttons_groups =  {
             "Generate" : ["Kruskal", "Prim"],
             "Solve": ["Solve DFS"],
-            "SolveControl": ["Next step solve", "Fast solve", "Stop"],
+            "SolveControl": ["Next step solve", "Fast solve", "Stop solving"],
             "Settings": ["Clear path", "Clear maze", "Import", "Export", "Exit"],
-            "GenerateControl": ["Next step", "Fast generate", "Stop"]
+            "GenerateControl": ["Next step", "Fast generate", "Stop generating"]
         }
         self.action_buttons = {
             "Kruskal": None,
@@ -27,7 +27,8 @@ class DisplayAgent():
             "Exit": None,
             "Next step": None,
             "Fast generate": None,
-            "Stop": None,
+            "Stop generating": None,
+            "Stop solving"
             "Import": None,
             "Export": None
         }

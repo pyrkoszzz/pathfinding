@@ -67,7 +67,7 @@ class EventAgent():
             self.app.solve_agent.nextStep()
         elif action == "Fast solve":
             self.action = self.app.solve_agent.fastForward
-        elif action == "Stop":
+        elif action == "Stop solving" or action == "Stop generating":
             self.action = None
         elif action == "Size +":
             self.app.maze_agent.maze_size = int(math.pow(math.sqrt(self.app.maze_agent.maze_size) + 1, 2))
