@@ -35,18 +35,22 @@ class EventAgent():
                     if tmp is not None:
                         if tmp.collidepoint(m_pos):
                             if event.button == 1:
-                                self.app.maze_agent.maze[y][x] = self.constants['starting_v']
-                                self.app.solve_agent.starting_v = int(math.sqrt(self.app.maze_agent.maze_size)) * (y//2) + (x//2)
+                                if self.app.solve_agent.e_v != (y,x) and self.app.maze_agent.maze[y][x]:
+                                    self.app.solve_agent.s_v = (y,x)
+                                    self.app.solve_agent.starting_v = int(math.sqrt(self.app.maze_agent.maze_size)) * (y//2) + (x//2)
                             elif event.button == 3:
-                                self.app.maze_agent.maze[y][x] = self.constants['ending_v']
-                                self.app.solve_agent.ending_v = int(math.sqrt(self.app.maze_agent.maze_size)) * (y//2) + (x//2)
+                                if self.app.solve_agent.s_v != (y,x) and self.app.maze_agent.maze[y][x]:
+                                    self.app.solve_agent.e_v = (y,x)
+                                    self.app.solve_agent.ending_v = int(math.sqrt(self.app.maze_agent.maze_size)) * (y//2) + (x//2)
 
     def executeAction(self, action):
         if action == "Exit":
             self.app.running = False
         elif action == "Kruskal":
+            self.app.solve_agent.maze_path = None
             self.app.maze_agent.initializeKruskal()
         elif action == "Prim":
+            self.app.solve_agent.maze_path = None
             self.app.maze_agent.initializePrim()
         elif action == "Next step":
             self.app.maze_agent.nextStep()
@@ -56,6 +60,9 @@ class EventAgent():
             self.app.solve_agent.initializeDFS()
         elif action == "Clear layer":
             self.app.maze_agent.maze = None
+            self.app.solve_agent.maze_path = None
+        elif action == "Clear path":
+            self.app.solve_agent.maze_path = None
         elif action == "Next step solve":
             self.app.solve_agent.nextStep()
         elif action == "Stop":
@@ -67,6 +74,7 @@ class EventAgent():
         elif action == "Export":
             self.exportToFile()
         elif action == "Import":
+            self.app.solve_agent.maze_path = None
             self.importFromFile()
 
     def executeActionsQueue(self):

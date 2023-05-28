@@ -8,6 +8,9 @@ class SolveAgent:
         self.roadmap = None
         self.starting_v = 0
         self.ending_v = self.app.maze_agent.maze_size-1
+        self.s_v = (0,0)
+        self.e_v = (2*int(math.sqrt(self.app.maze_agent.maze_size))-2, 2*int(math.sqrt(self.app.maze_agent.maze_size))-2)
+        self.maze_path = None
     
     def addEdge(self, u,v):
         self.m_adj_list[u].add((v,1))
@@ -26,17 +29,20 @@ class SolveAgent:
             self.createAdjListFromEgdes()
 
             self.roadmap = self.obj.dfs(self.starting_v, self.ending_v, [], set())
-            self.makeMazePath()
+            self.maze_path = self.makeMazePath()
 
     def makeMazePath(self):
-        n = int(math.sqrt(self.app.maze_agent.maze_size))
-
-        for x in range(len(self.roadmap)-1):
-            v = self.roadmap[x]
-            u = self.roadmap[x+1]
-            self.app.maze_agent.maze[2*(v // n)][2*(v % n)] = 2
-            self.app.maze_agent.maze[u // n + v // n][u % n + v % n] = 2
-        self.app.maze_agent.maze[2*(u // n)][2*(u % n)] = 2
+        if self.roadmap is not None:
+            n = int(math.sqrt(self.app.maze_agent.maze_size))
+            maze = []
+            [maze.append([0 for _ in range(2 * n - 1)]) for _ in range(2 * n - 1)]
+            for x in range(len(self.roadmap)-1):
+                v = self.roadmap[x]
+                u = self.roadmap[x+1]
+                maze[2*(v // n)][2*(v % n)] = 2
+                maze[u // n + v // n][u % n + v % n] = 2
+            maze[2*(u // n)][2*(u % n)] = 2
+            return maze
 
 class DFSSolver:
 

@@ -12,7 +12,7 @@ class DisplayAgent():
             "Generate" : ["Kruskal", "Prim"],
             "Solve": ["Solve DFS"],
             "SolveControl": ["Next step", "Fast solve", "Stop"],
-            "Settings": ["Clear layer", "Import", "Export", "Size +", "Size -", "Exit"],
+            "Settings": ["Clear path", "Clear layer", "Import", "Export", "Size +", "Size -", "Exit"],
             "GenerateControl": ["Next step", "Fast generate", "Stop"]
         }
         self.action_buttons = {
@@ -20,6 +20,7 @@ class DisplayAgent():
             "Prim": None,
             "Solve DFS": None,
             "Clear layer": None,
+            "Clear path": None,
             "Next step solve": None,
             "Size +": None,
             "Size -": None,
@@ -116,12 +117,12 @@ class UIPainter:
                     rect = self.rect_round(x * self.rect_size, y * self.rect_size, self.rect_size, self.rect_size)
                     if not self.display.app.maze_agent.maze[y][x]:
                         pygame.draw.rect(self.maze_surf,"black", rect)
-                    elif self.display.app.maze_agent.maze[y][x] == self.constants['s_path']:
-                        pygame.draw.rect(self.maze_surf, self.colors['maze_path'], rect)
-                    elif self.display.app.maze_agent.maze[y][x] == self.constants['starting_v']:
+                    elif (y,x) == self.display.app.solve_agent.s_v:
                         pygame.draw.rect(self.maze_surf, "green", rect)
-                    elif self.display.app.maze_agent.maze[y][x] == self.constants['ending_v']:
+                    elif (y,x) == self.display.app.solve_agent.e_v:
                         pygame.draw.rect(self.maze_surf, "red", rect)
+                    elif self.display.app.solve_agent.maze_path != None and self.display.app.solve_agent.maze_path[y][x] == self.constants['s_path']:
+                        pygame.draw.rect(self.maze_surf, self.colors['maze_path'], rect)
                     else:
                         rect = rect.move(self.maze_container.x, self.maze_container.y)
                         self.display.maze_path_colliders[y][x] = rect
