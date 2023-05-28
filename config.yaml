@@ -63,11 +63,11 @@ text:
   author: "Patryk Pyrkosz 119254"
   state: 
     status: "Status"
-    working: "Working"
-    done: "Done"
+    waiting: "Waiting for action"
     solving: "Solving maze"
     generating: "Generating maze"
-    ready: "Ready"
+    generated: "Maze generated successfuly"
+    solved: "Maze solved successfuly"
 constants:
   wall: 0
   path: 1

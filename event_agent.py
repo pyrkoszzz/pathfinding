@@ -56,23 +56,30 @@ class EventAgent():
             self.app.maze_agent.nextStep()
         elif action == "Fast generate":
             self.action = self.app.maze_agent.fastForward
-        elif action == "Solve DFS":
+        elif action == "Solve DFS" and self.app.state_agent.canMazeBeSolved():
             self.app.solve_agent.initializeDFS()
-        elif action == "Clear layer":
+        elif action == "Clear maze":
             self.app.maze_agent.maze = None
             self.app.solve_agent.maze_path = None
         elif action == "Clear path":
             self.app.solve_agent.maze_path = None
         elif action == "Next step solve":
             self.app.solve_agent.nextStep()
+        elif action == "Fast solve":
+            self.action = self.app.solve_agent.fastForward
         elif action == "Stop":
             self.action = None
         elif action == "Size +":
             self.app.maze_agent.maze_size = int(math.pow(math.sqrt(self.app.maze_agent.maze_size) + 1, 2))
+            self.app.solve_agent.ending_v = self.app.maze_agent.maze_size-1
+            self.app.solve_agent.e_v = (2*int(math.sqrt(self.app.maze_agent.maze_size))-2, 2*int(math.sqrt(self.app.maze_agent.maze_size))-2)
         elif action == "Size -":
             self.app.maze_agent.maze_size = int(math.pow(math.sqrt(self.app.maze_agent.maze_size) - 1, 2))
+            self.app.solve_agent.ending_v = self.app.maze_agent.maze_size-1
+            self.app.solve_agent.e_v = (2*int(math.sqrt(self.app.maze_agent.maze_size))-2, 2*int(math.sqrt(self.app.maze_agent.maze_size))-2)
         elif action == "Export":
-            self.exportToFile()
+            if self.app.state_agent.canMazeBeExported():
+                self.exportToFile()
         elif action == "Import":
             self.app.solve_agent.maze_path = None
             self.importFromFile()
@@ -83,19 +90,21 @@ class EventAgent():
 
     def exportToFile(self):
         fname = str(int(time.time())) + ".maze"
-        f = open(fname, "w")
-        f.write(str(self.app.maze_agent.maze_size) + '\n')
-        for u,v,w in self.app.maze_agent.graph:
-            f.write("%d %d %d\n" % (u,v,w))
-        f.close()
+        with open(fname, "w") as f:
+            f.write(str(self.app.maze_agent.maze_size) + '\n')
+            for u,v,w in self.app.maze_agent.graph:
+                f.write("%d %d %d\n" % (u,v,w))
+            f.close()
+            self.app.state_agent.log = "Maze exported successfully"
     
     def importFromFile(self):
-        self.app.status = "Maze import started"
+        self.app.state_agent.log = "Maze import started"
+        self.app.state_agent.updateState("generating")
         root = tk.Tk()
         root.withdraw()
         file_path = filedialog.askopenfilename()
         root.quit()
-        f = open(file_path, "r")
-        self.app.maze_agent.importMaze(f)
+        with open(file_path, "r") as f:
+            self.app.maze_agent.importMaze(f)
         
 

@@ -17,14 +17,16 @@ class MazeAgent:
 	def initializeKruskal(self):
 		self.obj = Kruskal(self.maze_size, self)
 		self.maze, self.graph = self.obj.generateMazeArray()
-		self.app.status = "Maze generation using Kruskal's algo started"
+		self.app.state_agent.log = "Maze generation using Kruskal's algo started"
+		self.app.state_agent.updateState("generating")
 		self.steps_cntr = 0
 		self.done = False
 
 	def initializePrim(self):
 		self.obj = Prim(self.maze_size, self)
 		self.maze, self.graph = self.obj.generateMazeArray()
-		self.app.status = "Maze generation using Prim's algo started"
+		self.app.state_agent.log = "Maze generation using Prim's algo started"
+		self.app.state_agent.state.updateState("generating")
 		self.steps_cntr = 0
 		self.done = False
 
@@ -44,6 +46,8 @@ class MazeAgent:
 		self.done = False
 		self.obj = MazeImporter(f, self.maze_size, self)
 		self.maze, self.graph = self.obj.generateMazeArray()
+		self.obj = None
+		
 
 class MazeGraph:
 
@@ -113,7 +117,8 @@ class MazeImporter(MazeGraph):
 			u,v,w = line.split()
 			self.result.append([int(u), int(v), int(w)])
 		self.done = True
-		self.maze_agent.app.status = "Maze imported successfuly"
+		self.maze_agent.app.state_agent.log = "Maze imported successfuly"
+		self.maze_agent.app.state_agent.updateState("generated")
 
 class Kruskal(MazeGraph):
 
@@ -140,7 +145,7 @@ class Kruskal(MazeGraph):
 			y = self.find(self.parent, v)
 			if x != y:
 				self.maze_agent.steps_cntr += 1
-				self.maze_agent.app.status = "Generating maze - steps: " + str(self.maze_agent.steps_cntr)
+				self.maze_agent.app.state_agent.log = "Generating maze - steps: " + str(self.maze_agent.steps_cntr)
 				self.e += 1
 				self.result.append([u, v, w])
 				self.union(self.parent, self.rank, x, y)
@@ -149,7 +154,8 @@ class Kruskal(MazeGraph):
 				self.nextStep()
 		if self.e >= self.V - 1:
 			self.maze_agent.done = True
-			self.maze_agent.app.status = "Maze generated successfuly"
+			self.maze_agent.app.state_agent.log = "Maze generated successfuly"
+			self.maze_agent.app.state_agent.updateState("generated")
 		return self.generateMazeArray()
 
 class Heap():

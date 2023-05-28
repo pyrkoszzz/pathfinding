@@ -11,19 +11,19 @@ class DisplayAgent():
         self.buttons_groups =  {
             "Generate" : ["Kruskal", "Prim"],
             "Solve": ["Solve DFS"],
-            "SolveControl": ["Next step", "Fast solve", "Stop"],
-            "Settings": ["Clear path", "Clear layer", "Import", "Export", "Size +", "Size -", "Exit"],
+            "SolveControl": ["Next step solve", "Fast solve", "Stop"],
+            "Settings": ["Clear path", "Clear maze", "Import", "Export", "Exit"],
             "GenerateControl": ["Next step", "Fast generate", "Stop"]
         }
         self.action_buttons = {
             "Kruskal": None,
             "Prim": None,
             "Solve DFS": None,
-            "Clear layer": None,
+            "Clear maze": None,
             "Clear path": None,
             "Next step solve": None,
-            "Size +": None,
-            "Size -": None,
+            # "Size +": None,
+            # "Size -": None,
             "Exit": None,
             "Next step": None,
             "Fast generate": None,
@@ -64,8 +64,7 @@ class UIPainter:
                                      int(self.display.display_surf_height * self.ui_propotions['font']))
         self.text = self.display.app.config_agent.getTexts()
         self.constants = self.display.app.config_agent.getConstants()
-        n = int(math.sqrt(self.display.app.maze_agent.maze_size))
-        [self.display.maze_path_colliders.append([None for _ in range(2 * n - 1)]) for _ in range(2 * n - 1)]
+        [self.display.maze_path_colliders.append([None for _ in range(1001)]) for _ in range(1001)]
     
     def drawBackground(self):
         self.display.display_surf.blit(self.display.app.assets_manager.main_background, (0,0))
@@ -91,7 +90,7 @@ class UIPainter:
             self.display.display_surf_height * self.ui_propotions['bars']['bottombar']['height'])
         shape_surf = pygame.Surface(pygame.Rect(bottom_bar).size, pygame.SRCALPHA)
         pygame.draw.rect(shape_surf, self.colors['info_bars'], shape_surf.get_rect())
-        app_status = self.font.render(self.text['state']['status'] + ": " + self.display.app.status, True, self.colors['text'])
+        app_status = self.font.render(self.text['state']['status'] + ": " + self.display.app.state_agent.log, True, self.colors['text'])
         shape_surf.blit(
             app_status, 
             (shape_surf.get_height() * self.ui_propotions['bars']['text_offset'],
@@ -146,6 +145,7 @@ class UIPainter:
         return button
     
     def drawMenuCointainers(self):
+
         def createContainer(propotions_group, group):
             container = pygame.Rect(
                 self.display.display_surf_width * propotions_group['pos_x'],

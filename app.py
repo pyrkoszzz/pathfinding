@@ -11,7 +11,6 @@ class App:
 
     def __init__(self):
         self.running = True
-        self.status = "Ready"
         self.config_agent = config_agent.ConfigAgent()
         self.display_agent = display_agent.DisplayAgent(self)
         self.assets_manager = assets_manager.AssetsManager(self)
