@@ -15,6 +15,8 @@ class ConfigAgent():
     def setDisplayMode(self):
         if self.config['display']['mode'] == 0:
             return pygame.FULLSCREEN
+        elif self.config['display']['mode'] == 1:
+            return (1280, 720)
     
     def getMainBackgroundPath(self):
         return self.config['assets']['background']
@@ -33,3 +35,6 @@ class ConfigAgent():
     
     def getStates(self):
         return self.config['text']['state']
+    
+    def getConstants(self):
+        return self.config['constants']

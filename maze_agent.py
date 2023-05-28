@@ -38,6 +38,12 @@ class MazeAgent:
 				self.maze, self.graph =  self.obj.nextStep()
 			else:
 				self.app.event_agent.action = None
+	
+	def importMaze(self, f):
+		self.maze_size = int(f.readline())
+		self.done = False
+		self.obj = MazeImporter(f, self.maze_size, self)
+		self.maze, self.graph = self.obj.generateMazeArray()
 
 class MazeGraph:
 
@@ -95,6 +101,20 @@ class MazeGraph:
 			for i in range(1, n):
 				print("% d - % d" % (parent[i], i))
  
+class MazeImporter(MazeGraph):
+
+
+	def __init__(self, f, vertices, maze_agent):
+		super().__init__(vertices)
+		self.result = []
+		self.maze_agent = maze_agent
+
+		for line in f:
+			u,v,w = line.split()
+			self.result.append([int(u), int(v), int(w)])
+		self.done = True
+		self.maze_agent.app.status = "Maze imported successfuly"
+
 class Kruskal(MazeGraph):
 
 

@@ -12,12 +12,27 @@ colors:
   info_bars: [0, 0, 127, 127]
   maze_path: [0, 0, 127, 127]
 ui_propotions:
+  buttons_padding: 0.005
   side_menu:
     width: 0.2
-    height: 0.8
-    pos_x: 0.05
+    pos_x: 0.01
     pos_y: 0.1
-    buttons_padding: 0.05
+  control_menu:
+    width: 0.2
+    pos_x: 0.22
+    pos_y: 0.1
+  solve_menu:
+    width: 0.2
+    pos_x: 0.01
+    pos_y: 0.28
+  solve_control_menu:
+    width: 0.2
+    pos_x: 0.22
+    pos_y: 0.28 
+  settings_menu:
+    width: 0.2
+    pos_x: 0.01
+    pos_y: 0.47
   selection_button: 
     width: 0.2
     height: 0.05
@@ -39,7 +54,7 @@ ui_propotions:
   maze_container: 
     width: 0.8
     height: 0.8
-    pos_x: 0.05
+    pos_x: 0.01
     pos_y: 0.1
   border_radius: 10
   font: 0.035
@@ -53,4 +68,9 @@ text:
     solving: "Solving maze"
     generating: "Generating maze"
     ready: "Ready"
-  
+constants:
+  wall: 0
+  path: 1
+  s_path: 2
+  starting_v: 3
+  ending_v: 4

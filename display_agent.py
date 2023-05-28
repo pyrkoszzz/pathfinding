@@ -6,20 +6,29 @@ class DisplayAgent():
 
     def __init__(self, app_instance):
         self.app = app_instance
-        self.display_surf = pygame.display.set_mode((0,0), self.app.config_agent.setDisplayMode())
+        self.display_surf = pygame.display.set_mode((0,0),self.app.config_agent.setDisplayMode())
         self.display_surf_size = self.display_surf_width, self.display_surf_height = self.display_surf.get_width(), self.display_surf.get_height()
+        self.buttons_groups =  {
+            "Generate" : ["Kruskal", "Prim"],
+            "Solve": ["Solve DFS"],
+            "SolveControl": ["Next step", "Fast solve", "Stop"],
+            "Settings": ["Clear layer", "Import", "Export", "Size +", "Size -", "Exit"],
+            "GenerateControl": ["Next step", "Fast generate", "Stop"]
+        }
         self.action_buttons = {
             "Kruskal": None,
             "Prim": None,
-            "Exit": None,
-            "Next step": None,
-            "Fast generate": None,
             "Solve DFS": None,
             "Clear layer": None,
             "Next step solve": None,
-            "Stop": None,
             "Size +": None,
-            "Size -": None
+            "Size -": None,
+            "Exit": None,
+            "Next step": None,
+            "Fast generate": None,
+            "Stop": None,
+            "Import": None,
+            "Export": None
         }
         self.maze_path_colliders = []
         pygame.init()
@@ -53,6 +62,7 @@ class UIPainter:
         self.font = pygame.font.Font(self.display.app.assets_manager.main_font, 
                                      int(self.display.display_surf_height * self.ui_propotions['font']))
         self.text = self.display.app.config_agent.getTexts()
+        self.constants = self.display.app.config_agent.getConstants()
         n = int(math.sqrt(self.display.app.maze_agent.maze_size))
         [self.display.maze_path_colliders.append([None for _ in range(2 * n - 1)]) for _ in range(2 * n - 1)]
     
@@ -89,7 +99,7 @@ class UIPainter:
 
     def drawMazeContainer(self):
         self.maze_container = pygame.Rect(
-            self.display.display_surf_width - self.display.display_surf_height * self.ui_propotions['maze_container']['height'] - self.display.display_surf_height * self.ui_propotions['maze_container']['pos_x'],
+            self.display.display_surf_width - self.display.display_surf_height * self.ui_propotions['maze_container']['height'] - self.display.display_surf_width * self.ui_propotions['maze_container']['pos_x'],
             self.display.display_surf_height * self.ui_propotions['maze_container']['pos_y'], 
             self.display.display_surf_height * self.ui_propotions['maze_container']['width'], 
             self.display.display_surf_height * self.ui_propotions['maze_container']['height'])
@@ -106,22 +116,22 @@ class UIPainter:
                     rect = self.rect_round(x * self.rect_size, y * self.rect_size, self.rect_size, self.rect_size)
                     if not self.display.app.maze_agent.maze[y][x]:
                         pygame.draw.rect(self.maze_surf,"black", rect)
-                    elif self.display.app.maze_agent.maze[y][x] == 2:
+                    elif self.display.app.maze_agent.maze[y][x] == self.constants['s_path']:
                         pygame.draw.rect(self.maze_surf, self.colors['maze_path'], rect)
-                    elif self.display.app.maze_agent.maze[y][x] == 3:
+                    elif self.display.app.maze_agent.maze[y][x] == self.constants['starting_v']:
                         pygame.draw.rect(self.maze_surf, "green", rect)
-                    elif self.display.app.maze_agent.maze[y][x] == 4:
+                    elif self.display.app.maze_agent.maze[y][x] == self.constants['ending_v']:
                         pygame.draw.rect(self.maze_surf, "red", rect)
-                    elif self.display.app.status == "Maze generated successfuly":
+                    else:
                         rect = rect.move(self.maze_container.x, self.maze_container.y)
                         self.display.maze_path_colliders[y][x] = rect
             self.display.display_surf.blit(self.maze_surf, self.maze_container)
 
-    def drawMenuButton(self, action, button_idx):
+    def drawMenuButton(self, action, button_idx, container):
         m_pos = pygame.mouse.get_pos()
         button = pygame.Rect(
-            self.menu_cointainer.left + self.ui_propotions['selection_button']['pos_x'],
-            self.menu_cointainer.top + self.display.display_surf_height * self.ui_propotions['selection_button']['pos_y'] * (button_idx * (1 + 2 * self.ui_propotions['side_menu']['buttons_padding'])), 
+            container.left + self.ui_propotions['selection_button']['pos_x'],
+            container.top + self.display.display_surf_height * self.ui_propotions['selection_button']['pos_y'] * button_idx + (button_idx * self.display.display_surf_height * self.ui_propotions['buttons_padding']), 
             self.display.display_surf_width * self.ui_propotions['selection_button']['width'],
             self.display.display_surf_height * self.ui_propotions['selection_button']['height'])
         button_surf = pygame.Surface(pygame.Rect(button).size, pygame.SRCALPHA)
@@ -133,26 +143,60 @@ class UIPainter:
                         button_surf.get_height() * self.ui_propotions['selection_button']['text_offset']))
         self.display.display_surf.blit(button_surf, button)
         return button
+    
+    def drawMenuCointainers(self):
+        def createContainer(propotions_group, group):
+            container = pygame.Rect(
+                self.display.display_surf_width * propotions_group['pos_x'],
+                self.display.display_surf_height * propotions_group['pos_y'],
+                self.display.display_surf_width * propotions_group['width'],
+                len(self.display.buttons_groups[group]) * 
+                self.display.display_surf_height * 
+                self.ui_propotions['selection_button']['height'] +
+                (len(self.display.buttons_groups[group])-1) * self.ui_propotions['buttons_padding'] * self.display.display_surf_height)
+            shape_surf = pygame.Surface(pygame.Rect(container).size, pygame.SRCALPHA)
+            pygame.draw.rect(shape_surf, self.colors['menu_container'], shape_surf.get_rect(), border_radius=self.ui_propotions['border_radius'])
+            self.display.display_surf.blit(shape_surf, container)
+            return container
+        
+        self.menu_container = createContainer(self.ui_propotions['side_menu'], "Generate")
+        self.control_menu_container = createContainer(self.ui_propotions['control_menu'], "GenerateControl")
+        self.solve_container = createContainer(self.ui_propotions['solve_menu'], "Solve")
+        self.settings_container = createContainer(self.ui_propotions['settings_menu'], "Settings")
+        self.solve_control_container = createContainer(self.ui_propotions['solve_control_menu'], "SolveControl")
 
-    def drawSideMenu(self):
-        self.menu_cointainer = pygame.Rect(
-            self.display.display_surf_height * self.ui_propotions['side_menu']['pos_x'],
-            self.display.display_surf_height * self.ui_propotions['side_menu']['pos_y'],
-            self.display.display_surf_width * self.ui_propotions['side_menu']['width'],
-            self.display.display_surf_height * self.ui_propotions['side_menu']['height'])
-        shape_surf = pygame.Surface(pygame.Rect(self.menu_cointainer).size, pygame.SRCALPHA)
-        pygame.draw.rect(shape_surf, self.colors['menu_container'], shape_surf.get_rect(), border_radius=self.ui_propotions['border_radius'])
-        self.display.display_surf.blit(shape_surf, self.menu_cointainer)
+        def switchMenuSurface(category):
+            if category == "Generate":
+                return self.menu_container
+            elif category == "GenerateControl":
+                return self.control_menu_container
+            elif category == "Solve":
+                return self.solve_container
+            elif category == "Settings":
+                return self.settings_container
+            elif category == "SolveControl":
+                return self.solve_control_container
+
+        for category, values in self.display.buttons_groups.items():
+            button_idx = 0
+            for action in values:
+                collider = self.drawMenuButton(action, button_idx, switchMenuSurface(category))
+                self.display.action_buttons.update({action: collider})
+                button_idx += 1
+        
+    def drawControlMenu(self):
         button_idx = 0
+        buttons_to_draw = self.display.buttons_groups["GenerateControl"]
         for action in self.display.action_buttons.keys():
-            collider = self.drawMenuButton(action, button_idx)
-            self.display.action_buttons.update({action: collider})
-            button_idx += 1
+            if action in buttons_to_draw:
+                collider = self.drawMenuButton(action, button_idx, self.control_menu_cointainer)
+                self.display.action_buttons.update({action: collider})
+                button_idx += 1
 
     def drawUI(self):
         self.drawBackground()
         self.drawInfoBars()
-        self.drawSideMenu()
+        self.drawMenuCointainers()
         self.drawMazeContainer()
         self.drawMaze()
 
