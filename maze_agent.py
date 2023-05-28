@@ -33,6 +33,8 @@ class MazeAgent:
 	def nextStep(self):
 		if not self.done and self.obj != None:
 			self.maze, self.graph =  self.obj.nextStep()
+		else:
+			self.obj = None
 
 	def fastForward(self):
 		if self.obj != None:

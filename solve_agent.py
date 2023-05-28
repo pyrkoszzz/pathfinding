@@ -22,6 +22,9 @@ class SolveAgent:
     def initializeDFS(self):
         if self.app.maze_agent.graph is not None:
             self.done = False
+            self.steps_cntr = 0
+            self.app.state_agent.log = "Maze traversal using DFS algo started"
+            self.app.state_agent.updateState("solving")
             self.obj = DFSSolver(self)
             self.maze_graph = self.app.maze_agent.graph
             self.maze_graph = sorted(self.maze_graph, key=lambda item: item[0])
@@ -31,6 +34,8 @@ class SolveAgent:
     def nextStep(self):
         if not self.done and self.obj != None:
             self.maze_path =  self.obj.nextStep(self.m_adj_list)
+        else:
+            self.obj = None
     
     def fastForward(self):
         if self.obj != None:
@@ -65,10 +70,14 @@ class DFSSolver:
                     
     def nextStep(self, graph):
         if self.stack:
+            self.solve_agent.steps_cntr += 1
+            self.solve_agent.app.state_agent.log = "Solving maze - steps: " + str(self.solve_agent.steps_cntr)
             current_node, path = self.stack.pop()
 
             if current_node == self.end:
                 self.solve_agent.done = True
+                self.solve_agent.app.state_agent.log = "Maze solved successfuly"
+                self.solve_agent.app.state_agent.updateState("solved")
                 return self.makeMazePath(path)
 
             if current_node not in self.visited:
