@@ -1,8 +1,8 @@
 display:
   mode: 0
 assets:
-  background: [assets, images,"background.jpg"]
-  font: [assets, fonts, "Montserrat-SemiBold.ttf"]
+  background: [../, assets, images,"background.jpg"]
+  font: [../, assets, fonts, "Montserrat-SemiBold.ttf"]
 colors:
   text: [255,255,255]
   button: [255,255,255,50]

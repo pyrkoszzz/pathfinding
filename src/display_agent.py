@@ -3,11 +3,25 @@ import math
 
 class DisplayAgent():
 
+    """!Klasa DisplayAgent jest odpowiedzialna za zarządzanie wyświetlaniem danych i interakcją z użytkownikiem w aplikacji. 
+    Służy do prezentacji informacji, grafiki, komunikatów, formularzy itp. oraz odbierania interakcji użytkownika, takich jak kliknięcia, wprowadzanie danych itp. 
+    Głównym celem klasy DisplayAgent jest zapewnienie interfejsu użytkownika, który umożliwia łatwe przekazywanie informacji użytkownikowi i rejestrowanie jego działań.
+    """
 
     def __init__(self, app_instance):
+
+        """! Konstruktor klasy wyświetlającej.
+        Inicjalizuje zmienne i komponenty używane w aplikacji.
+        
+        @return  Instancja klasy DisplayAgent zainicjalizowana podaną nazwą.
+        """
+        ## Obiekt bazowej klasy aplikacji
         self.app = app_instance
+        ## Obiekt głównego okna aplikacji
         self.display_surf = pygame.display.set_mode((0,0),self.app.config_agent.setDisplayMode())
+        ## Przechowuje aktualne rozmiary okna aplikacji
         self.display_surf_size = self.display_surf_width, self.display_surf_height = self.display_surf.get_width(), self.display_surf.get_height()
+        ## Słownik grup przycisków wyświetlanych w oddzielnych kontenerach menu
         self.buttons_groups =  {
             "Generate" : ["Kruskal", "Prim"],
             "Solve": ["Solve DFS"],
@@ -15,6 +29,7 @@ class DisplayAgent():
             "Settings": ["Clear path", "Clear maze", "Import", "Export", "Exit"],
             "GenerateControl": ["Next step", "Fast generate", "Stop generating"]
         }
+        ## Definiuje wszystkie przyciski znajdujące się w aplikacji wraz z obiektami kolidera
         self.action_buttons = {
             "Kruskal": None,
             "Prim": None,
@@ -32,20 +47,31 @@ class DisplayAgent():
             "Import": None,
             "Export": None
         }
+        ## Lista koliderów obiektów rysowanych w kontenerze labiryntu, służąca do wykrywania wybieranych wierzachołków labiryntu 
         self.maze_path_colliders = []
+        ## Inicjalizacja silnika pygame służącego do obsługi wizualnej aplikacji
         pygame.init()
 
     def render(self):
+        """! Funkcja służąca do aktualizacji elementó graficznych w oknie aplikacji 
+        """
         self.ui_painter.drawUI()
         pygame.display.update()
 
     def cleanUp(self):
+        """! Funkcja czyszcząca pozostałe zasoby przed zamknięciem aplikacji
+        """
         pygame.quit()
 
     def loop(self):
+        """! Pętla obsługująca wszystkie akcje dziejące się w tle aplikcaji
+        """
         self.app.event_agent.executeActionsQueue()
 
     def run(self):
+        """! Główna funkcja uruchamiająca interfejs graficzny aplikacji
+        """
+        ## Obiekt rysujący elementy w oknie aplikacji
         self.ui_painter = UIPainter(self)
         while self.app.running:
             for event in pygame.event.get():
@@ -56,21 +82,44 @@ class DisplayAgent():
 
 class UIPainter:
 
+    """! Klasa UIPainter jest odpowiedzialna za malowanie interfejsu użytkownika (UI) w aplikacji. 
+    Służy do tworzenia i renderowania elementów UI, takich jak przyciski, etykiety, listy, menu itp. 
+    Klasa UIPainter zapewnia narzędzia do projektowania i prezentowania interaktywnych elementów UI, które są widoczne i dostępne dla użytkownika.
+    """
 
     def __init__(self, display_instance):
+
+        """! Konstruktor klasy rysującej.
+        Inicjalizuje zmienne i komponenty używane w aplikacji.
+        
+        @return  Instancja klasy UIPainter zainicjalizowana podaną nazwą.
+        """
+
+        ## Obiekt klasy wyświetlającej
         self.display = display_instance
+        ## Obiekt przechowywujący rozmieszczenia elementów ui w oknie aplikacji
         self.ui_propotions = self.display.app.config_agent.getPropotionsDict()
+        ## Obiekt przechowywujący kolory używane w aplikacji
         self.colors = self.display.app.config_agent.getColors()
+        ## Obiekt przechowywujący czcionki aplikacji
         self.font = pygame.font.Font(self.display.app.assets_manager.main_font, 
                                      int(self.display.display_surf_height * self.ui_propotions['font']))
+        ## Obiekt zawierający wyświetlane napisy w aplikacji
         self.text = self.display.app.config_agent.getTexts()
+        ## Obiekt zawierający stałe używanye w aplikacji
         self.constants = self.display.app.config_agent.getConstants()
         [self.display.maze_path_colliders.append([None for _ in range(1001)]) for _ in range(1001)]
     
     def drawBackground(self):
+
+        """! Funkcja tworząca tło okna aplikacji
+        """
+
         self.display.display_surf.blit(self.display.app.assets_manager.main_background, (0,0))
 
     def drawInfoBars(self):
+        """!Funkcja tworząca widgety na ekranie
+            Rysuje dolny i górny pasek"""
         top_bar = pygame.Rect(
             self.display.display_surf_width * self.ui_propotions['bars']['topbar']['pos_x'], 
             self.display.display_surf_height * self.ui_propotions['bars']['topbar']['pos_y'], 
@@ -99,6 +148,8 @@ class UIPainter:
         self.display.display_surf.blit(shape_surf, bottom_bar)
 
     def drawMazeContainer(self):
+        """! Funkcja tworząca kontener labiryntu
+        """
         self.maze_container = pygame.Rect(
             self.display.display_surf_width - self.display.display_surf_height * self.ui_propotions['maze_container']['height'] - self.display.display_surf_width * self.ui_propotions['maze_container']['pos_x'],
             self.display.display_surf_height * self.ui_propotions['maze_container']['pos_y'], 
@@ -109,6 +160,8 @@ class UIPainter:
         self.display.display_surf.blit( self.maze_surf, self.maze_container)
 
     def drawMaze(self):
+        """! Funkcja rysująca ścieżki, ściany oraz mapę przejścia przez labirynt
+        """
         if self.display.app.maze_agent.maze != None and self.display.app.maze_agent.graph != None:
             maze_size = len(self.display.app.maze_agent.maze[0])
             self.rect_size = (self.maze_surf.get_width() / maze_size)
@@ -129,6 +182,8 @@ class UIPainter:
             self.display.display_surf.blit(self.maze_surf, self.maze_container)
 
     def drawMenuButton(self, action, button_idx, container):
+        """! Funkcja tworząca instancję przycisku menu
+        """
         m_pos = pygame.mouse.get_pos()
         button = pygame.Rect(
             container.left + self.ui_propotions['selection_button']['pos_x'],
@@ -146,7 +201,8 @@ class UIPainter:
         return button
     
     def drawMenuCointainers(self):
-
+        """! Funkcja tworząca kontenery na oddzielne menu 
+        """
         def createContainer(propotions_group, group):
             container = pygame.Rect(
                 self.display.display_surf_width * propotions_group['pos_x'],
@@ -160,14 +216,20 @@ class UIPainter:
             pygame.draw.rect(shape_surf, self.colors['menu_container'], shape_surf.get_rect(), border_radius=self.ui_propotions['border_radius'])
             self.display.display_surf.blit(shape_surf, container)
             return container
-        
+        ## Kontener grupy przycisków służących do generowania labiryntu
         self.menu_container = createContainer(self.ui_propotions['side_menu'], "Generate")
+        ## Kontener grupy przycisków służących do kontroli generowania labiryntu
         self.control_menu_container = createContainer(self.ui_propotions['control_menu'], "GenerateControl")
+        ## Kontener grupy przycisków służących do rozwiązywania labiryntu
         self.solve_container = createContainer(self.ui_propotions['solve_menu'], "Solve")
+        ## Kontener grupy przycisków służących do zmiany ustawień
         self.settings_container = createContainer(self.ui_propotions['settings_menu'], "Settings")
+        ## Kontener grupy przycisków służących do kontroli rozwiązywania labiryntu
         self.solve_control_container = createContainer(self.ui_propotions['solve_control_menu'], "SolveControl")
 
         def switchMenuSurface(category):
+            """! Funkcja przyporządkowywująca grupie przycisków kontener, w którym ten ma się znajdować
+            """
             if category == "Generate":
                 return self.menu_container
             elif category == "GenerateControl":
@@ -185,17 +247,10 @@ class UIPainter:
                 collider = self.drawMenuButton(action, button_idx, switchMenuSurface(category))
                 self.display.action_buttons.update({action: collider})
                 button_idx += 1
-        
-    def drawControlMenu(self):
-        button_idx = 0
-        buttons_to_draw = self.display.buttons_groups["GenerateControl"]
-        for action in self.display.action_buttons.keys():
-            if action in buttons_to_draw:
-                collider = self.drawMenuButton(action, button_idx, self.control_menu_cointainer)
-                self.display.action_buttons.update({action: collider})
-                button_idx += 1
 
     def drawUI(self):
+        """! Funkcja unifikacyjna do zbiorczego rysowania wszystkich elementów ui
+        """
         self.drawBackground()
         self.drawInfoBars()
         self.drawMenuCointainers()
@@ -203,6 +258,8 @@ class UIPainter:
         self.drawMaze()
 
     def rect_round(self, x1, y1, w, h):
+      """! Funkcja zaokrąglająca wymiary z postaci zmienno-przecinkowej do stało-przecinkowej, jednocześnie nie zmniejszająć wymiarów
+      """
       r_x1 = round(x1)
       r_y1 = round(y1)
       r_w = round(x1 - r_x1 + w)

@@ -6,13 +6,31 @@ from tkinter import filedialog
 
 class EventAgent():
 
+    """! Klasa jest odpowiedzialna za zarządzanie zdarzeniami (eventami) w aplikacji. 
+    Służy do przechwytywania, przetwarzania i reagowania na różne rodzaje zdarzeń, takich jak kliknięcia myszy, naciśnięcia klawiszy, zmiany stanu aplikacji itp. 
+    Głównym celem klasy jest monitorowanie i obsługa zdarzeń, które występują w trakcie działania aplikacji.
+    """
 
     def __init__(self, app_instance):
+
+        """! Konstruktor klasy obsługi zdarzeń.
+        Inicjalizuje zmienne i komponenty używane w aplikacji.
+        
+        @return  Instancja klasy EventAgent zainicjalizowana podaną nazwą.
+        """
+
+        ## Obiekt bazowej klasy aplikacji
         self.app = app_instance
+        ## Aktualna akcja do wykonania (asynchronicznie)
         self.action = None
+        ## Obiekt zawierający stałe używanye w aplikacji
         self.constants = self.app.config_agent.getConstants()
 
     def handleEvent(self,event, m_pos):
+
+        """! Główna funkcja przetwarzająca akcje użytkownika
+        """
+
         if event.type == pygame.QUIT:
             self.app.running = False 
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -21,12 +39,16 @@ class EventAgent():
             
             
     def handleActionButtons(self, event, m_pos):
+        """! Funkcja rozpoznająca przycisk, który został kliknięty przez użytkownika
+        """
         if event.button == 1:
             for action, collider in self.app.display_agent.action_buttons.items():
                     if collider is not None and collider.collidepoint(m_pos):
                         self.executeAction(action)
 
     def handlePointsChoice(self, event, m_pos):
+        """! Funkcja rozpoznająca wierzchołek labiryntu, który został wybrany przez użytkownika
+        """
         if self.app.state_agent.canPointBePicked() and self.app.maze_agent.maze != None and len(self.app.maze_agent.maze[0]) > 0:
             it = range(len(self.app.maze_agent.maze[0])) 
             for x in it:
@@ -44,6 +66,8 @@ class EventAgent():
                                     self.app.solve_agent.ending_v = int(math.sqrt(self.app.maze_agent.maze_size)) * (y//2) + (x//2)
 
     def executeAction(self, action):
+        """! Funkcja uruchamiająca odpowiednie akcje względem przycisku, który został kliknięty przez użytkownika
+        """
         if action == "Exit":
             self.app.running = False
         elif action == "Kruskal":
@@ -85,11 +109,15 @@ class EventAgent():
             self.importFromFile()
 
     def executeActionsQueue(self):
+        """! Funkcja wykonująca zadanie z kolejki 
+        """
         if self.action is not None:
             self.action()
 
     def exportToFile(self):
-        fname = str(int(time.time())) + ".maze"
+        """! Funkcja eksportująca labirynt do pliku .maze
+        """
+        fname = "../" + str(int(time.time())) + ".maze"
         with open(fname, "w") as f:
             f.write(str(self.app.maze_agent.maze_size) + '\n')
             for u,v,w in self.app.maze_agent.graph:
@@ -98,6 +126,8 @@ class EventAgent():
             self.app.state_agent.log = "Maze exported successfully"
     
     def importFromFile(self):
+        """! Funkcja importująca labirynt z pliku .maze
+        """
         self.app.state_agent.log = "Maze import started"
         self.app.state_agent.updateState("generating")
         root = tk.Tk()
