@@ -1,4 +1,4 @@
-# Wstęp
+# PathFinding
 
 ## Cel, idea, założenia
 
